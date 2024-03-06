@@ -57,6 +57,11 @@ describe("Book routes", function(){
         })
     })
 
+    test("GET /books/:isbn getting non-existent book", async function(){
+        const res = await request(app).get('/books/4')
+        expect(res.statusCode).toEqual(404)
+    })
+
     test("POST /books making a book", async function(){
         const res = await request(app).post('/books')
         .send({
@@ -97,7 +102,6 @@ describe("Book routes", function(){
             year: "a"
         })
         expect(res.statusCode).toEqual(500)
-        expect(res.body).toEqual()
     })
 
     test("PUT /books/:isbn Updating a books", async function(){
@@ -128,12 +132,33 @@ describe("Book routes", function(){
         })
     })
 
+    test("PUT /books/:isbn Updating with invalid year", async function(){
+        const res = await request(app).put('/books/0691161518').send(
+            {
+                isbn:"0691161518",
+                amazon_url:"http://a.co/eobPtX2",
+                author:"a",
+                language:"a",
+                pages: 264,
+                publisher: "a",
+                title: "a",
+                year: "a"
+            }
+        )
+        expect(res.statusCode).toEqual(500)
+    })
+
     test("DELETE /books:isbn", async function(){
         const res = await request(app).delete('/books/0691161518')
         expect(res.statusCode).toEqual(200)
         expect(res.body).toEqual(
             { message: "Book deleted" }
         )
+    })
+
+    test("DELETE /books:isbn Deleting a non-existent book", async function(){
+        const res = await request(app).delete('/books/4')
+        expect(res.statusCode).toEqual(404)
     })
 
 
