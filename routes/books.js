@@ -3,6 +3,7 @@ const Book = require("../models/book");
 
 const router = new express.Router();
 
+const jsonschema = require("jsonschema")
 const bookSchema = require("../schema.json")
 
 
@@ -32,7 +33,7 @@ router.get("/:id", async function (req, res, next) {
 
 router.post("/", async function (req, res, next) {
   try {
-    const result = jsonschema(req.body,bookSchema)
+    const result = jsonschema.validate(req.body,bookSchema)
     if (!result.valid){
       const listOfErrrors = result.errors.map(e=>{
         error.stack
